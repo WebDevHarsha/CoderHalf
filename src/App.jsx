@@ -6,28 +6,57 @@ function App() {
   const [error, setError] = useState(null);
   const [location, setLocation] = useState('');
   const [userGenders, setUserGenders] = useState({});
+  const [webDevHarshaData, setWebDevHarshaData] = useState(null); // New state for WebDevHarsha data
 
   const find = () => {
     setLoading(true);
     setError(null);
-    fetch(`https://api.github.com/search/users?q=location:${encodeURIComponent(location)}`)
+    setData(null); // Reset data
+    setUserGenders({}); // Reset userGenders
+    setWebDevHarshaData(null); // Reset WebDevHarsha data
+
+    fetchUserData('WebDevHarsha');
+    if (location.trim() !== '') {
+      fetch(`https://api.github.com/search/users?q=location:${encodeURIComponent(location)}`)
+        .then((response) => {
+          if (!response.ok) {
+            throw new Error(`HTTP error! status: ${response.status}`);
+          }
+          return response.json();
+        })
+        .then((userData) => {
+          setData(userData);
+          setLoading(false);
+          fetchGenders(userData.items);
+        })
+        .catch((error) => {
+          setError(error.message);
+          setLoading(false);
+        });
+    }
+  };
+
+  const fetchUserData = (username) => {
+    fetch(`https://api.github.com/users/${username}`)
       .then((response) => {
         if (!response.ok) {
           throw new Error(`HTTP error! status: ${response.status}`);
         }
         return response.json();
       })
-      .then((data) => {
-        setData(data);
+      .then((userData) => {
+        console.log("WebDevHarsha data:", userData); // Log fetched data
+        setWebDevHarshaData(userData); // Store WebDevHarsha data separately
         setLoading(false);
-        fetchGenders(data.items);
+        fetchGenders([userData]);
       })
       .catch((error) => {
+        console.error("Error fetching WebDevHarsha data:", error); // Log error
         setError(error.message);
         setLoading(false);
       });
   };
-
+  
   const fetchGenders = (users) => {
     users.forEach(user => {
       fetch(`https://api.genderize.io/?name=${user.login}`)
@@ -62,9 +91,25 @@ function App() {
         </button>
         {loading && <div className="mt-4 text-center">Loading...</div>}
         {error && <div className="mt-4 text-center text-red-500">Error: {error}</div>}
+        
         {data && (
           <div className="mt-6">
             <h2 className="text-xl font-semibold mb-4">Coders in {location}</h2>
+            {['banglore', 'bengaluru','bangalore'].includes(location.toLowerCase()) && (
+              <div className="flex items-center space-x-4 bg-gray-50 p-4 rounded-lg shadow-sm">
+              <img src={webDevHarshaData.avatar_url} alt={webDevHarshaData.login} className="w-12 h-12 rounded-full"/>
+              <div>
+                <a
+                  href={webDevHarshaData.html_url}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="text-blue-500 hover:underline"
+                >
+                  {webDevHarshaData.login}
+                </a>
+                <p>Gender: Male</p>
+              </div>
+            </div>)}
             <ul className="space-y-4">
               {data.items.map((user) => (
                 <li key={user.id} className="flex items-center space-x-4 bg-gray-50 p-4 rounded-lg shadow-sm">
