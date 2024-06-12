@@ -95,7 +95,7 @@ function App() {
         {data && (
           <div className="mt-6">
             <h2 className="text-xl font-semibold mb-4">Coders in {location}</h2>
-            {['banglore', 'bengaluru','bangalore'].includes(location.toLowerCase()) && (
+            {['banglore', 'bengaluru','bangalore','vit chennai'].includes(location.toLowerCase()) && (
               <div className="flex items-center space-x-4 bg-gray-50 p-4 rounded-lg shadow-sm">
               <img src={webDevHarshaData.avatar_url} alt={webDevHarshaData.login} className="w-12 h-12 rounded-full"/>
               <div>
