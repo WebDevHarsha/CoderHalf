@@ -47,7 +47,7 @@ function App() {
   return (
     <div className="min-h-screen bg-gray-100 p-4">
       <div className="max-w-lg mx-auto bg-white shadow-lg rounded-lg p-6">
-        <h1 className="text-2xl font-bold mb-4">Find GitHub Users by Location</h1>
+        <h1 className="text-2xl text-center font-bold mb-4">Find your Coder half by Location</h1>
         <textarea
           className="w-full p-2 border-2 border-gray-300 rounded mb-4 focus:outline-none focus:border-blue-500"
           value={location}
@@ -64,7 +64,7 @@ function App() {
         {error && <div className="mt-4 text-center text-red-500">Error: {error}</div>}
         {data && (
           <div className="mt-6">
-            <h2 className="text-xl font-semibold mb-4">GitHub Users in {location}</h2>
+            <h2 className="text-xl font-semibold mb-4">Coders in {location}</h2>
             <ul className="space-y-4">
               {data.items.map((user) => (
                 <li key={user.id} className="flex items-center space-x-4 bg-gray-50 p-4 rounded-lg shadow-sm">
